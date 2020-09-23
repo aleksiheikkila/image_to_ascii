@@ -1,6 +1,9 @@
 # image_to_ascii
 Turns an image to corresponding ascii text version.
 
+Example image. Original image on the left, generated ascii version on the right:
+![Example before after Image 1](example.png)
+
 Dependencies:
   * Tested on python 3.7.7
   * Pillow (PIL)
