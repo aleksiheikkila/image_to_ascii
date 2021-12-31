@@ -5,25 +5,31 @@ from colorama import init, Fore  # , Back, Style
 
 
 MAX_SIZE = (320, 240)  # Thumbnail imgs to this max size
-BACKGROUND = "black"   # background color for the ascii text
+# BACKGROUND = "black"   # background color for the ascii text
 
 COLORNAME_TO_COLORAMA_FORE_MAP = {"red": Fore.RED, 
                                   "blue": Fore.BLUE, 
                                   "green": Fore.GREEN}  # could add some more
 
+# characters roughly in order of increasing "character volume". e.g. if characters are black 
+# and background is white, this is the order of increasing "pixel" darkness.
 ASCIIS = "`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$"
+
 
 def open_and_resize_img(img_path, max_size=MAX_SIZE):
     im = Image.open(img_path).convert("RGB")
     im.thumbnail(max_size)
     return im
 
+
 def get_ascii_charmap(background_color="black"):
+    """ Get suitable ascii character map for given background color. Not currently used """
     if background_color == "black":
         return ASCIIS
     elif background_color == "white":
         # if background is instead white, "invert"
         return ASCIIS[::-1]
+
 
 def rgb_to_brightness(pixel, method="average", invert_brightness=False):
     if method == "average":
@@ -40,10 +46,12 @@ def rgb_to_brightness(pixel, method="average", invert_brightness=False):
 
     return bri
 
+
 def brightness_to_ascii(bri, ascii_charset=ASCIIS, min_bri=0., max_bri=255.):
     bri_range = max_bri - min_bri 
     bri_levels_per_char = bri_range / (len(ascii_charset) - 1)
-    return ascii_charset[int(round(bri/bri_levels_per_char))]
+    return ascii_charset[int(round(bri / bri_levels_per_char))]
+
 
 def get_brightness_and_ascii(img_arr, method, num_chars_per_pixel, invert_brightness):
     """Returns 
@@ -68,9 +76,12 @@ def get_brightness_and_ascii(img_arr, method, num_chars_per_pixel, invert_bright
 
 def img_to_ascii_str(img_path, max_size, brightness_method, background_color,
                     num_chars_per_pixel, invert_brightness):
+    
     im = open_and_resize_img(img_path, max_size=max_size)
     img_arr = np.array(im)
-    ascii_charmap = get_ascii_charmap(background_color=background_color)
+
+    # 
+    # ascii_charmap = get_ascii_charmap(background_color=background_color)
 
     brightness_arr, ascii_list = get_brightness_and_ascii(img_arr, 
                                                           brightness_method, 
@@ -91,12 +102,12 @@ if __name__ == "__main__":
     parser.add_argument("--max_size", "-s", nargs=2, metavar=("width", "height"), 
                         help="max img size", default=MAX_SIZE, type=int)
     parser.add_argument("--brightness_method", "-m", 
-                        help="Brightness method (average, ligthness or luminosity",
+                        help="Brightness method (average|lightness|luminosity)",
                         default="average")
     parser.add_argument("--output_file", "-o", 
                         help="Where to write the string")
     parser.add_argument("--background_color", "-b", 
-                help="Background color (black / white",
+                help="Background color (black|white) - NOT CURRENTLY SUPPORTED",
                 default="black")
     parser.add_argument("--num_chars_per_pixel", "-n", type=int,
             help="How many times to repeat each character",
@@ -116,7 +127,7 @@ if __name__ == "__main__":
     ascii_str = img_to_ascii_str(args.img_file, 
                                  args.max_size, 
                                  args.brightness_method,
-                                 args.background_color,
+                                 args.background_color, 
                                  args.num_chars_per_pixel,
                                  args.invert_brightness)
     
