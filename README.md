@@ -5,6 +5,11 @@ Turns an image to a corresponding ascii text version.
 The basic approach is to map pixel values to ascii character(s). Different characters have different level of lightness/darkness based on how the character rectangle is divided into actual character and the background, which are typically of opposite color (e.g. black characters on white background). For example, character "." has a lot of background and character "$" has a lot of character itself. When looked from a distance, exact characters are no longer that much distinguishable, and the image is formed by just the lightness/darkness levels.
 
 
+### Example transformation. 
+
+Original image on the left, generated ascii version on the right:
+![Example before after Image 1](example.png)
+
 ### Dependencies:
 
 Tested on python 3.7.7 with the following package versions:
